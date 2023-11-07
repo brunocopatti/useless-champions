@@ -1,4 +1,4 @@
-# Useless Champions
+# useless-champions
 
 A program to disenchant League of Legends useless champion fragments.
 
