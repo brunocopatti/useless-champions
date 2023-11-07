@@ -61,7 +61,7 @@ class LCU_Connection:
             masteries
         ))
 
-        disenchant_list = []
+        disenchant_champions = {}
 
         for champion in self.champions:
             # Get champion ID
@@ -82,18 +82,39 @@ class LCU_Connection:
 
             disenchant = (champion["count"] - keep)
 
-            if disenchant > 0:
+            if disenchant > 1:
                 print(f"{disenchant} {champion['itemDesc']} fragments")
+            elif disenchant == 1:
+                print(f"1 {champion['itemDesc']} fragment")
 
-            disenchant_list.extend(
-                [champion["lootId"]] * disenchant
-            )
+            if disenchant >= 1:
+                disenchant_champions[champion["lootId"]] = disenchant
 
-        if len(disenchant_list) == 0:
-            sys.exit("You don't have useless champion fragments")
+        if len(disenchant_champions) == 0:
+            sys.exit("You don't have useless champion fragments.")
+
+        confirmation = input("Do you want to disenchant the fragments above? (yes/no)")
+
+        if not confirmation == "yes":
+            sys.exit("Exiting program.")
+
+        for champion in self.champions:
+            try:
+                disenchant = disenchant_champions[champion["lootId"]]
+            except:
+                continue
+
+            if disenchant > 1:
+                print(f"Disenchanting {disenchant} {champion['itemDesc']} fragments...")
+            elif disenchant == 1:
+                print(f"Disenchanting 1 {champion['itemDesc']} fragment...")
+            else:
+                continue
+
+            playerLootList = [champion["lootId"]] * disenchant
+            self.craft(champion["disenchantRecipeName"], playerLootList)
 
 
     def craft(self, recipeName: str, playerLootList: list):
-        response = self.request("post", f"/lol-loot/v1/recipes/{recipeName}/craft", json=playerLootList).json()
+        self.request("post", f"/lol-loot/v1/recipes/{recipeName}/craft", json=playerLootList).json()
         self.update_loot()
-        return response
