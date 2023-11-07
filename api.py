@@ -24,7 +24,7 @@ class LCU_Connection:
         try:
             self.update_loot()
             self.puuid = self.request("get", "/lol-summoner/v1/current-summoner").json()["puuid"]
-            print("Connected successfully to LCU.")
+            print("Connected successfully to LCU...")
         except:
             sys.exit("Failed to connect, ensure you're logged in or restart League of Legends.")
 
@@ -52,7 +52,9 @@ class LCU_Connection:
         return list(champion_fragments)
     
 
-    def get_useless_champions(self):
+    def disenchant_useless_champions(self):
+        print("Searching for useless champions...")
+
         masteries = self.request("get", f"/lol-collections/v1/inventories/{self.puuid}/champion-mastery").json()
         masteries = dict(map(
             lambda mastery: (mastery["championId"], mastery["championLevel"]),
@@ -61,10 +63,10 @@ class LCU_Connection:
 
         disenchant_list = []
 
-        # Iterate champion fragments
         for champion in self.champions:
             # Get champion ID
             id = int(re.findall(r"\d+", champion["lootId"])[0])
+
             keep = 3
 
             if champion["redeemableStatus"] == "ALREADY_OWNED":
@@ -90,10 +92,8 @@ class LCU_Connection:
         if len(disenchant_list) == 0:
             sys.exit("You don't have useless champion fragments")
 
-        return disenchant_list
 
-
-    # def craft(self, recipeName: str, playerLootList: list):
-    #     response = self.request("post", f"/lol-loot/v1/recipes/{recipeName}/craft", json=playerLootList).json()
-    #     self.update_loot()
-    #     return response
+    def craft(self, recipeName: str, playerLootList: list):
+        response = self.request("post", f"/lol-loot/v1/recipes/{recipeName}/craft", json=playerLootList).json()
+        self.update_loot()
+        return response

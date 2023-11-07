@@ -4,7 +4,7 @@ import json
 
 def main():
     connection = api.LCU_Connection()
-    print(json.dumps(connection.get_useless_champions(), indent=2))
+    connection.disenchant_useless_champions()
 
 
 if __name__ == "__main__":
