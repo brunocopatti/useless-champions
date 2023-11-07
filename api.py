@@ -52,16 +52,22 @@ class LCU_Connection:
         return list(champion_fragments)
     
 
-    def disenchant_useless_champions(self):
-        print("Searching for useless champions...")
-
+    @property
+    def masteries(self):
         masteries = self.request("get", f"/lol-collections/v1/inventories/{self.puuid}/champion-mastery").json()
-        masteries = dict(map(
+
+        return dict(map(
             lambda mastery: (mastery["championId"], mastery["championLevel"]),
             masteries
         ))
 
-        disenchant_champions = {}
+
+    def get_useless_champions(self) -> (dict | None):
+        print("Searching for useless champions...")
+
+        masteries = self.masteries
+
+        useless_champions = {}
 
         for champion in self.champions:
             # Get champion ID
@@ -83,24 +89,28 @@ class LCU_Connection:
             disenchant = (champion["count"] - keep)
 
             if disenchant > 1:
-                print(f"{disenchant} {champion['itemDesc']} fragments")
+                print(f"Found {disenchant} {champion['itemDesc']} fragments")
             elif disenchant == 1:
-                print(f"1 {champion['itemDesc']} fragment")
+                print(f"Found 1 {champion['itemDesc']} fragment")
 
             if disenchant >= 1:
-                disenchant_champions[champion["lootId"]] = disenchant
+                useless_champions[champion["lootId"]] = disenchant
 
-        if len(disenchant_champions) == 0:
-            sys.exit("You don't have useless champion fragments.")
+        return useless_champions
+    
 
-        confirmation = input("Do you want to disenchant the fragments above? (yes/no)")
+    def disenchant_champions(self, champion_dict) -> (bool | None):
+        if len(champion_dict) == 0:
+            return
+        
+        confirmation = input("Do you want to disenchant this fragments? (yes/no)")
 
         if not confirmation == "yes":
-            sys.exit("Exiting program.")
+            return
 
         for champion in self.champions:
             try:
-                disenchant = disenchant_champions[champion["lootId"]]
+                disenchant = champion_dict[champion["lootId"]]
             except:
                 continue
 
@@ -113,6 +123,72 @@ class LCU_Connection:
 
             playerLootList = [champion["lootId"]] * disenchant
             self.craft(champion["disenchantRecipeName"], playerLootList)
+
+        return True
+
+
+    def get_upgradeable_champions(self) -> (dict | None):
+        print("Searching for upgradeable champions...")
+
+        upgradeable_champions = []
+        essence_cost = 0
+
+        for champion in self.champions:
+            if champion["redeemableStatus"] == "ALREADY_OWNED":
+                continue
+            
+            print(f"Found {champion['itemDesc']}")
+
+            upgradeable_champions.append({"id": champion["lootId"], "name": champion["itemDesc"]})
+            essence_cost += champion["upgradeEssenceValue"]
+
+        return {
+            "champions": upgradeable_champions,
+            "essence_cost": essence_cost
+        }
+    
+    
+    def upgrade_champions(self, champion_dict) -> (bool | None):
+        try:
+            champions = champion_dict["champions"]
+            essence_cost = champion_dict["essence_cost"]
+        except:
+            return
+
+        if len(champions) == 0:
+            return
+        
+        blue_essences = list(filter(
+            lambda asset: asset["lootId"] == "CURRENCY_champion",
+            self.loot
+        ))[0]["count"]
+        
+        if (blue_essences - essence_cost) < 0:
+            print("You don't have enough blue essences to upgrade all these champion fragments.")
+            return
+        
+        confirmation = input(f"You will have {blue_essences - essence_cost} blue essences if you upgrade all, do you want to proceed? (yes/no)")
+
+        if not confirmation == "yes":
+            return
+
+        for champion in champions:
+            print(f"Upgrading {champion['name']}...")
+
+            recipe = list(filter(
+                lambda recipe: recipe["type"] == "UPGRADE",
+                self.request("get", f"/lol-loot/v1/recipes/initial-item/{champion['id']}").json()
+            ))[0]
+
+            recipeName = recipe["recipeName"]
+            playerLootList = []
+
+            for slot in recipe["slots"]:
+                playerLootList.append(slot["lootIds"][0])
+
+            self.craft(recipeName, playerLootList)
+
+        return True
 
 
     def craft(self, recipeName: str, playerLootList: list):
