@@ -1,13 +1,23 @@
 import project
-    
-   
-def test_function_1():
-    assert project.function_1() == "foo"
+import api
 
 
-def test_function_2():
-    assert project.function_2() == "bar"
+connection = api.LCU_Connection()
 
 
-def test_function_n():
-    assert project.function_n() == "baz"
+def test_get_useless():
+    # Assuming is an account with no useless champions
+    assert project.get_useless(connection) == {}
+
+
+def test_disenchant_champions():
+    assert project.disenchant_champions(connection, {}) == None
+
+
+def test_get_upgradeable():
+    ...
+
+
+def test_upgrade_champions():
+    ...
+

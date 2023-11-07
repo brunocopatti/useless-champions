@@ -3,19 +3,22 @@ import api
 
 def main():
     connection = api.LCU_Connection()
-    connection.disenchant_useless_champions()
 
 
-def function_1():
-    return "foo"
+def get_useless(connection: api.LCU_Connection):
+    return connection.get_useless_champions()
 
 
-def function_2():
-    return "bar"
+def disenchant_champions(connection: api.LCU_Connection, champion_dict):
+    return connection.disenchant_champions(champion_dict)
 
 
-def function_n():
-    return "baz"
+def get_upgradeable(connection: api.LCU_Connection):
+    return connection.get_upgradeable_champions()
+
+
+def upgrade_champions(connection: api.LCU_Connection, champion_dict):
+    return connection.upgrade_champions(champion_dict)
 
 
 if __name__ == "__main__":
