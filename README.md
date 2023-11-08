@@ -1,6 +1,10 @@
+This project is being built, do not use it yet.
+
 # useless-champions
 
 A program to disenchant League of Legends useless champion fragments.
+
+![A useless champion example](https://images.contentstack.io/v3/assets/blt187521ff0727be24/blt21051e981c6ebb3f/60ee1226730ed71c59413b01/sona-color-splash.jpg)
 
 ## Pseudocode
 
