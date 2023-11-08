@@ -21,3 +21,8 @@ def test_get_upgradeable():
 
 def test_upgrade_champions():
     assert project.upgrade_champions(connection, {}) == None
+
+
+def test_parse_champion_name():
+    assert project.parse_champion_name(connection, "briar") == "CHAMPION_RENTAL_233"
+    assert project.parse_champion_name(connection, "XERATH") == "CHAMPION_RENTAL_101"
