@@ -1,4 +1,5 @@
-This project is being built, do not use it yet.
+> [!WARNING]
+> This project is being built, do not use it yet.
 
 # useless-champions
 
