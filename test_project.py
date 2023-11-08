@@ -1,37 +1,30 @@
 import project
-import api
+import json
 
 
-connection = api.LCU_Connection()
+with open("test_champions_large.json") as file:
+    champions_large = json.loads(file.read())
 
-
-def test_get_useless():
-    # Assuming is an account with no useless champions
-    assert project.get_useless(connection) == {}
-
-
-def test_disenchant_champions():
-    assert project.disenchant_champions(connection, {}) == None
-
-
-def test_get_upgradeable():
-    # Assuming is an account with no upgradeable champions
-    assert project.get_upgradeable(connection) == {}
-
-
-def test_upgrade_champions():
-    assert project.upgrade_champions(connection, {}) == None
+with open("test_champions_short.json") as file:
+    champions_short = json.loads(file.read())
 
 
 def test_parse_champion_name():
-    assert project.parse_champion_name(connection, "foo") == None
-    assert project.parse_champion_name(connection, "briar") == "CHAMPION_RENTAL_233"
-    assert project.parse_champion_name(connection, "XERATH") == "CHAMPION_RENTAL_101"
+    assert project.parse_champion_name(champions_large, "") == None
+    assert project.parse_champion_name(champions_large, "briar") == "CHAMPION_RENTAL_233"
 
 
 def test_parse_champion_arguments():
-    assert project.parse_champion_arguments(connection, {}) == {}
-    assert project.parse_champion_arguments(connection, ["briar", "1", "xerath", "1"]) == {
+    assert project.parse_champion_arguments(champions_large, []) == {}
+    assert project.parse_champion_arguments(champions_large, ["briar", 1, "xerath", 1]) == {
         "CHAMPION_RENTAL_233": 1,
         "CHAMPION_RENTAL_101": 1
+    }
+
+
+def test_parse_champions():
+    assert project.parse_champions(champions_short) == {
+        "CHAMPION_RENTAL_104": 2,
+        "CHAMPION_RENTAL_234": 1,
+        "CHAMPION_RENTAL_106": 1
     }
