@@ -3,6 +3,12 @@ import api
 
 def main():
     connection = api.LCU_Connection()
+    
+    useless = get_useless(connection)
+    disenchant_champions(connection, useless)
+
+    upgradeable = get_upgradeable(connection)
+    upgrade_champions(connection, upgradeable)
 
 
 def get_useless(connection: api.LCU_Connection):

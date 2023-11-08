@@ -15,9 +15,9 @@ def test_disenchant_champions():
 
 
 def test_get_upgradeable():
-    ...
+    # Assuming is an account with no upgradeable champions
+    assert project.get_upgradeable(connection) == {}
 
 
 def test_upgrade_champions():
-    ...
-
+    assert project.upgrade_champions(connection, {}) == None
