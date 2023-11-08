@@ -28,3 +28,4 @@ A program to disenchant League of Legends useless champion fragments.
 ## TODO
 
 - [X] Make essence relatable stuff in upgrade champions function
+- [ ] Check for arguments first
