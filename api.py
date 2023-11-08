@@ -62,7 +62,7 @@ class LCU_Connection:
         ))
 
 
-    def get_useless_champions(self) -> (dict | None):
+    def get_useless_champions(self) -> dict:
         print("Searching for useless champions...")
 
         masteries = self.masteries
@@ -75,7 +75,7 @@ class LCU_Connection:
 
             keep = 3
 
-            if champion["redeemableStatus"] == "ALREADY_OWNED":
+            if champion["itemStatus"] == "OWNED":
                 keep = 2
 
             try:
@@ -101,17 +101,19 @@ class LCU_Connection:
 
     def disenchant_champions(self, champion_dict) -> (bool | None):
         if len(champion_dict) == 0:
-            return
-        
-        confirmation = input("Do you want to disenchant this fragments? (yes/no)")
-
-        if not confirmation == "yes":
+            print("0 fragments found.")
             return
 
         for champion in self.champions:
             try:
                 disenchant = champion_dict[champion["lootId"]]
             except:
+                continue
+
+            # TODO: Make it plural sensitive
+            confirmation = input(f"Do you want to disenchant {disenchant} {champion['itemDesc']}? (yes/no)")
+
+            if not confirmation == "yes":
                 continue
 
             if disenchant > 1:
@@ -127,53 +129,53 @@ class LCU_Connection:
         return True
 
 
-    def get_upgradeable_champions(self) -> (dict | None):
+    def get_upgradeable_champions(self) -> dict:
         print("Searching for upgradeable champions...")
 
-        upgradeable_champions = []
-        essence_cost = 0
+        upgradeable_champions = {}
 
         for champion in self.champions:
-            if champion["redeemableStatus"] == "ALREADY_OWNED":
+            if champion["itemStatus"] == "OWNED":
                 continue
             
             print(f"Found {champion['itemDesc']}")
 
-            upgradeable_champions.append({"id": champion["lootId"], "name": champion["itemDesc"]})
-            essence_cost += champion["upgradeEssenceValue"]
-
-        return {
-            "champions": upgradeable_champions,
-            "essence_cost": essence_cost
-        }
+            upgradeable_champions[champion["lootId"]] = 1
+            
+        return upgradeable_champions
     
     
     def upgrade_champions(self, champion_dict) -> (bool | None):
-        try:
-            champions = champion_dict["champions"]
-            essence_cost = champion_dict["essence_cost"]
-        except:
-            return
-
-        if len(champions) == 0:
+        if len(champion_dict) == 0:
+            print("0 fragments found.")
             return
         
         blue_essences = list(filter(
             lambda asset: asset["lootId"] == "CURRENCY_champion",
             self.loot
         ))[0]["count"]
-        
-        if (blue_essences - essence_cost) < 0:
-            print("You don't have enough blue essences to upgrade all these champion fragments.")
-            return
-        
-        confirmation = input(f"You will have {blue_essences - essence_cost} blue essences if you upgrade all, do you want to proceed? (yes/no)")
 
-        if not confirmation == "yes":
-            return
+        for champion in self.champions:
+            try:
+                repeat = champion_dict[champion["lootId"]]
+            except:
+                continue
 
-        for champion in champions:
-            print(f"Upgrading {champion['name']}...")
+            if champion["itemStatus"] == "OWNED":
+                print(f"You can't upgrade {champion['itemDesc']} because you own it.")
+                continue
+
+            if (blue_essences - (champion["upgradeEssenceValue"] * repeat)) < 0:
+                print(f"You don't have enough essences to upgrade {repeat} {champion['itemDesc']}")
+                continue
+
+            # TODO: Make it plural sensitive
+            confirmation = input(f"Do you want to upgrade {repeat} {champion['itemDesc']}? (yes/no)")
+
+            if not confirmation == "yes":
+                continue
+
+            print(f"Upgrading {repeat} {champion['name']}...")
 
             recipe = list(filter(
                 lambda recipe: recipe["type"] == "UPGRADE",
@@ -186,7 +188,9 @@ class LCU_Connection:
             for slot in recipe["slots"]:
                 playerLootList.append(slot["lootIds"][0])
 
-            self.craft(recipeName, playerLootList)
+            self.craft(recipeName, [playerLootList] * repeat)
+
+            blue_essences -= (champion["upgradeEssenceValue"] * repeat)
 
         return True
 
