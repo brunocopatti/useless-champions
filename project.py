@@ -23,6 +23,9 @@ def main():
         champion_dict = parse_champion_arguments(connection.champions, sys.argv[2:])
 
     if sys.argv[1] in ("-d", "--disenchant"):
+        if len(sys.argv) == 2:
+            print("WARNING: All champion fragments selected")
+            
         connection.disenchant_champions(champion_dict)
 
     if sys.argv[1] in ("-u", "--upgrade"):
