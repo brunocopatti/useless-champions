@@ -24,14 +24,12 @@ def main():
 
     if sys.argv[1] in ("-d", "--disenchant"):
         connection.disenchant_champions(champion_dict)
-        return
 
     if sys.argv[1] in ("-u", "--upgrade"):
         if len(sys.argv) == 2:
             champion_dict = connection.get_upgradeable_champions()
             
         connection.upgrade_champions(champion_dict)
-        return
 
 
 def parse_champion_arguments(champions, champion_arguments: list):
