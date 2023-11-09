@@ -121,7 +121,7 @@ class LCU_Connection:
                 print(f"You only have {champion['count']} {champion['itemDesc']} fragments, disenchanting all instead.")
                 disenchant = champion["count"]
 
-            if disenchant > 1:
+            if disenchant >= 1:
                 print(f"Disenchanting {disenchant} {champion['itemDesc']} fragments...")
             else:
                 continue
@@ -175,8 +175,9 @@ class LCU_Connection:
                 print(f"You can't upgrade {champion['itemDesc']} because you own it.")
                 continue
 
-            if repeat > champion["count"]:
-                print(f"You only have {champion['count']} {champion['itemDesc']} fragments.")
+            if repeat > 1:
+                print(f"You can only upgrade 1 {champion['itemDesc']} fragment, upgrading 1 instead.")
+                repeat = 1
 
             if (blue_essences - (champion["upgradeEssenceValue"] * repeat)) < 0:
                 print(f"You don't have enough essences to upgrade {repeat} {champion['itemDesc']}")
