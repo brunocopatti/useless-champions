@@ -63,7 +63,7 @@ class LCU_Connection:
 
 
     def get_useless_champions(self) -> dict:
-        print("Searching for useless champions...")
+        print("Searching useless champions...")
 
         masteries = self.masteries
 
@@ -96,12 +96,19 @@ class LCU_Connection:
             if disenchant >= 1:
                 useless_champions[champion["lootId"]] = disenchant
 
+        if len(useless_champions) == 0:
+            print("You don't have useless champions.")
+
         return useless_champions
     
 
     def disenchant_champions(self, champion_dict) -> (bool | None):
         if len(champion_dict) == 0:
-            print("0 fragments found.")
+            return
+        
+        confirmation = input(f"Do you want to disenchant those fragments? (yes/no)")
+
+        if not confirmation == "yes":
             return
 
         for champion in self.champions:
@@ -111,19 +118,11 @@ class LCU_Connection:
                 continue
 
             if disenchant > champion["count"]:
-                print(f"You only have {champion['count']} {champion['itemDesc']} fragments.")
-                continue
-
-            # TODO: Make it plural sensitive
-            confirmation = input(f"Do you want to disenchant {disenchant} {champion['itemDesc']} fragments? (yes/no)")
-
-            if not confirmation == "yes":
-                continue
+                print(f"You only have {champion['count']} {champion['itemDesc']} fragments, disenchanting all instead.")
+                disenchant = champion["count"]
 
             if disenchant > 1:
                 print(f"Disenchanting {disenchant} {champion['itemDesc']} fragments...")
-            elif disenchant == 1:
-                print(f"Disenchanting 1 {champion['itemDesc']} fragment...")
             else:
                 continue
 
@@ -134,7 +133,7 @@ class LCU_Connection:
 
 
     def get_upgradeable_champions(self) -> dict:
-        print("Searching for upgradeable champions...")
+        print("Searching upgradeable champions...")
 
         upgradeable_champions = {}
 
@@ -145,19 +144,26 @@ class LCU_Connection:
             print(f"Found {champion['itemDesc']}")
 
             upgradeable_champions[champion["lootId"]] = 1
+
+        if len(upgradeable_champions) == 0:
+            print("You don't have upgradeable champions.")
             
         return upgradeable_champions
     
     
     def upgrade_champions(self, champion_dict) -> (bool | None):
         if len(champion_dict) == 0:
-            print("0 fragments found.")
             return
         
         blue_essences = list(filter(
             lambda asset: asset["lootId"] == "CURRENCY_champion",
             self.loot
         ))[0]["count"]
+
+        confirmation = input(f"Do you want to upgrade those fragments? (yes/no)")
+
+        if not confirmation == "yes":
+            return
 
         for champion in self.champions:
             try:
@@ -174,12 +180,6 @@ class LCU_Connection:
 
             if (blue_essences - (champion["upgradeEssenceValue"] * repeat)) < 0:
                 print(f"You don't have enough essences to upgrade {repeat} {champion['itemDesc']}")
-                continue
-
-            # TODO: Make it plural sensitive
-            confirmation = input(f"Do you want to upgrade {repeat} {champion['itemDesc']}? (yes/no)")
-
-            if not confirmation == "yes":
                 continue
 
             print(f"Upgrading {repeat} {champion['name']}...")
