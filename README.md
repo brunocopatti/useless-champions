@@ -1,9 +1,4 @@
-> [!WARNING]
-> This project is being built, do not use it yet.
-
 # useless-champions
-#### Video Demo:
-#### Description:
 
 A program to disenchant League of Legends useless champion fragments.
 
