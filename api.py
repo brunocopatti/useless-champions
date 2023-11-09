@@ -106,12 +106,16 @@ class LCU_Connection:
 
         for champion in self.champions:
             try:
-                disenchant = champion_dict[champion["lootId"]]
+                disenchant = int(champion_dict[champion["lootId"]])
             except:
                 continue
 
+            if disenchant > champion["count"]:
+                print(f"You only have {champion['count']} {champion['itemDesc']} fragments.")
+                continue
+
             # TODO: Make it plural sensitive
-            confirmation = input(f"Do you want to disenchant {disenchant} {champion['itemDesc']}? (yes/no)")
+            confirmation = input(f"Do you want to disenchant {disenchant} {champion['itemDesc']} fragments? (yes/no)")
 
             if not confirmation == "yes":
                 continue
@@ -164,6 +168,9 @@ class LCU_Connection:
             if champion["itemStatus"] == "OWNED":
                 print(f"You can't upgrade {champion['itemDesc']} because you own it.")
                 continue
+
+            if repeat > champion["count"]:
+                print(f"You only have {champion['count']} {champion['itemDesc']} fragments.")
 
             if (blue_essences - (champion["upgradeEssenceValue"] * repeat)) < 0:
                 print(f"You don't have enough essences to upgrade {repeat} {champion['itemDesc']}")
