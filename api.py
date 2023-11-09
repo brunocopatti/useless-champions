@@ -183,11 +183,11 @@ class LCU_Connection:
                 print(f"You don't have enough essences to upgrade {repeat} {champion['itemDesc']}")
                 continue
 
-            print(f"Upgrading {repeat} {champion['name']}...")
+            print(f"Upgrading {repeat} {champion['itemDesc']}...")
 
             recipe = list(filter(
                 lambda recipe: recipe["type"] == "UPGRADE",
-                self.request("get", f"/lol-loot/v1/recipes/initial-item/{champion['id']}").json()
+                self.request("get", f"/lol-loot/v1/recipes/initial-item/{champion['lootId']}").json()
             ))[0]
 
             recipeName = recipe["recipeName"]
@@ -196,7 +196,7 @@ class LCU_Connection:
             for slot in recipe["slots"]:
                 playerLootList.append(slot["lootIds"][0])
 
-            self.craft(recipeName, [playerLootList] * repeat)
+            self.craft(recipeName, playerLootList * repeat)
 
             blue_essences -= (champion["upgradeEssenceValue"] * repeat)
 
