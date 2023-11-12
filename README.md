@@ -31,5 +31,5 @@ Run only `project.py` if you want to search and disenchant all useless champions
 
 ### Options
 
-- Use the option `-u` or `--upgrade` alone to upgrade all upgradeable champions, or specify the desired champions as arguments with this format: `xerath 1 briar 2`.
-- Use the option `-d` or `--disenchant` alone to disenchant all champion fragments, or specify champions with the same format of `--upgrade`.
+- Use the option `-d` or `--disenchant` alone to disenchant all champion fragments, or specify champions with this format: `xerath 1 briar 2`.
+- Use the option `-u` or `--upgrade` alone to upgrade all upgradeable champions, or specify the desired champions as arguments with the same format as `--disenchant`.
