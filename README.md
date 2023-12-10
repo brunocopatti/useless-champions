@@ -4,9 +4,6 @@ A program to disenchant League of Legends useless champion fragments.
 
 ![A useless champion example](https://images.contentstack.io/v3/assets/blt187521ff0727be24/blt21051e981c6ebb3f/60ee1226730ed71c59413b01/sona-color-splash.jpg)
 
-## Video Demo
-https://youtu.be/tIh7n2Wcbhg
-
 ## Pseudocode
 
 - Connect to LCU
@@ -31,5 +28,5 @@ Run only `project.py` if you want to search and disenchant all useless champions
 
 ### Options
 
-- Use the option `-d` or `--disenchant` alone to disenchant all champion fragments, or specify champions with this format: `xerath 1 briar 2`.
-- Use the option `-u` or `--upgrade` alone to upgrade all upgradeable champions, or specify the desired champions as arguments with the same format as `--disenchant`.
+- Use the option `-u` or `--upgrade` alone to upgrade all upgradeable champions, or specify the desired champions as arguments with this format: `xerath 1 briar 2`.
+- Use the option `-d` or `--disenchant` alone to disenchant all champion fragments, or specify champions with the same format of `--upgrade`.
