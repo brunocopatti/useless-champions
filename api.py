@@ -22,7 +22,6 @@ class LCU_Connection:
         self._headers = {"Authorization": f"Basic {userpass}"}
 
         try:
-            self.update_loot()
             self.puuid = self.request("get", "/lol-summoner/v1/current-summoner").json()["puuid"]
             print("Connected successfully to LCU...")
         except:
@@ -35,11 +34,7 @@ class LCU_Connection:
 
     @property
     def loot(self):
-        return self._loot
-    
-    
-    def update_loot(self):
-        self._loot = self.request("get", "/lol-loot/v1/player-loot").json()
+        return self.request("get", "/lol-loot/v1/player-loot").json()
 
 
     @property
