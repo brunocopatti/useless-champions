@@ -39,12 +39,10 @@ class LCU_Connection:
 
     @property
     def champions(self):
-        champion_fragments = filter(
+        return list(filter(
             lambda asset: asset["displayCategories"] == "CHAMPION",
             self.loot
-        )
-
-        return list(champion_fragments)
+        ))
     
 
     @property
