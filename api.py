@@ -198,4 +198,3 @@ class LCU_Connection:
 
     def craft(self, recipeName: str, playerLootList: list):
         self.request("post", f"/lol-loot/v1/recipes/{recipeName}/craft", json=playerLootList).json()
-        self.update_loot()
