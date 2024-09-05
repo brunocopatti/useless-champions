@@ -14,9 +14,10 @@ A program to disenchant League of Legends useless champion fragments.
 
 ## How to use
 
-1. Install the dependencies by running `pip install -r requirements.txt`
-2. Log in League of Legends
-3. Run `python main.py` to disenchant all useless champions, and also upgrade upgradeable champions
+1. Optionally set a virtual environment `python -m venv .venv` and activate it
+2. Install the dependencies by running `pip install -r requirements.txt`
+3. Log in League of Legends
+4. Run `python main.py` to disenchant all useless champions, and also upgrade upgradeable champions
 
 ## Options
 
