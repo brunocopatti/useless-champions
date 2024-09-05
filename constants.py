@@ -1,8 +1,7 @@
 import sys
-import os
 
 if sys.platform == "win32":
-    LOCKFILEPATH = "C:\Riot Games\League of Legends\lockfile"
+    LOCKFILEPATH = "C:\\Riot Games\\League of Legends\\lockfile"
 if sys.platform == "darwin":
     raise NotImplementedError("""
         macOS is not implemented, consider helping 🤓
